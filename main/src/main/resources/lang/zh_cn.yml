@@ -1,0 +1,19 @@
+intro: # 语言信息
+  name: "简体中文" # 语言名称
+  author: ["AerMini"] # 语言作者
+  lore: # 语言描述
+    - "默认语言"
+
+content:
+  team-simple-red: "&c&lR" # args中的simpleteam
+  team-simple-blue: "&b&lB"
+  team-simple-green: "&a&lG"
+  team-simple-yellow: "&e&lY"
+  team-color-red: '&c'
+  team-color-blue: '&b'
+  team-color-green: '&a'
+  team-color-yellow: '&e'
+  team-red: '红队'
+  team-blue: '蓝队'
+  team-green: '绿队'
+  team-yellow: '黄队'

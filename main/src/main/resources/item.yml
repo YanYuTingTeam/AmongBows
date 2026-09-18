@@ -1,0 +1,26 @@
+# 所有物品的event 会向目标action event传入以下参数
+
+# $args.player..$
+# $args.target..$ - 像LEFT-CLICK这种触发的, 遵循这个规则: 如果有玩家被点击了, 则该参数会传入被点击的玩家
+# $args.position..$
+# $args.item..$
+# $args.targetblock..$ - 像LEFT-CLICK这种触发的, 遵循这个规则: 如果有方块被点击了, 则该参数会传入被点击的方块
+
+bow:
+  intro:
+    name: "弓 &7&n(左键选择技能)"
+    material: BOW # 对应自己维护的mapping中的material
+    lore:
+      - "选择技能后, 蓄力使用弓发射箭对命中的目标使用技能"
+  event: # 触发的action事件
+    # 左键点击触发 LEFT-CLICK
+    LEFT-CLICK: ""
+    # 右键点击触发 RIGHT-CLICK
+    RIGHT-CLICK: ""
+    # 道具使用触发
+    ITEM-USE: ""
+    # 道具丢弃触发
+    ITEM-DROP: ""
+    # 获得该道具触发
+    ITEM-GET: ""
+    # 

@@ -1,0 +1,36 @@
+# 此配置为地图id(游戏id) “default” 的配置文件
+
+intro: # 地图信息(游戏信息)
+  name: "示例游戏" # 地图名称(游戏名称)
+  author: ["AerMini"] # 地图作者名称
+
+time: 1800 # 游戏时间(秒)
+region: world # 多世界适用 世界名称
+loc: # 游戏区域
+  pos1: "-80,0,-80,.." # 区域坐标1
+  pos2: "-80,0,-80,.." # 区域坐标2
+  underY: 40 # 虚空高度 低于此y的都是虚空
+
+generate: # 游戏方块生成设置
+  enabled: false # 设为true会在游戏区域随机生成柱子, false则直接使用已有地图
+  max_diffH: 12 # 随机生成的柱子允许的最大高度差
+  helper_blocks: true # 是否随机生成空中辅助方块
+  safe_blocks: true # 是否在柱子身上随机生成落脚/安全方块
+  spacing-min: 4 # 柱子之间的最小水平间距(方块)
+  spacing-max: 10 # 柱子之间的最大水平间距(方块)
+  weight-min: 1 # 柱子最小粗
+  weight-max: 5 # 柱子最大粗
+  round: false # 柱子是否为圆. round为true时，weight代表的是直径
+  blocks:
+    main: CONCRETE # 柱子本体方块
+    safe_blocks: # on用在需要依附挂靠在其他方块上的方块，会自动调整朝向，比如梯子. by用在无需挂靠的方块，比如玻璃
+      # 格式  [依附方法]|[方块ID]|[特殊值]
+      # 当特殊值为空，则默认为0. 如果为-1，意味着这是个颜色方块，则会跟随它依附的柱子的颜色来决定其特殊值
+      - "on|LADDER"
+      - "by|STONE_SLAB2"
+      - "by|STAINED_GLASS|-1"
+      - "by|WOOL|-1"
+
+record: # 未启用数据库时, 记录将被保存在此处
+  time: 1800 # 进行游戏的耗时(秒)
+  players: ["player1","player2"]

@@ -1,0 +1,56 @@
+waiting: # 等待时/游戏开始前
+  - "       &b&l弓箭之间"
+  - " "
+  - "&f游戏地图:"
+  - "    &a&l“{map}”"
+  - "&f人数: &e&l{player}&f/&e&l{player_max}"
+  - "   {counttime}"
+  - " "
+  - "    &c[烟雨庭原创]"
+
+counttime: #{counttime}
+  waiting: "&f还需要 &e&l{player_need} &f名玩家"
+  counting: "&f游戏将在 &e&l{count} &f秒后开始"
+
+
+gaming: # 游戏中
+  - "       &e&l{map} &f- &c{time_format}"
+  - "&7弓箭之间 | {date_format}"
+  - " "
+  - "&7&k|| &7队伍技能点 &7&k||"
+  - "&c&l{red_skill_points} &f/ &b&l{blue_skill_points} &f/ &a&l{green_skill_points} &f/ &e&l{yellow_skill_points}"
+  - " "
+  - "{playersinfo}"
+  - " "
+  - "    &c[烟雨庭原创]"
+
+live: "{team_format} &r{player_format}  &f{hp}&c♥ {marks}"
+relive: "{team_format} &r{player_format}  &c复活中 &f[{rel_progress}%]"
+died: "{team_format} &r{player_format}  &7已死亡   &7{hasArrow} arrows"
+loss: "{team_format} &r{player_format}  &7已淘汰   &7{hasArrow} arrows"
+
+marks:
+  usebow_draw: "&5✈" # 标记#1 - 拉弓/选技能
+  usebow_fire: "&b✈" # 标记#2 - 射箭
+  hplost: "&d▼" # 标记#3 - 掉血
+  guessed: "&6★" # 标记#4 - 被猜中队伍
+  getitem: "&a✎" # 标记#5 - 获得道具
+
+format: # {[key]_format}
+  # {team_color}-> lang/.. content.team-color-.. | {team_simple}-> lang/.. content.team-simple-..
+  team: "{team_color}&l{team_simple}"
+  player: "{team_color}{playername}"
+  time: "mm:ss"
+  date: "yyyy/MM/dd"
+
+
+after: # 游戏结束
+  - "       &e&l{map} &f- &c{time_format}"
+  - "&7弓箭之间 | {date_format}"
+  - " "
+  - "&7&k|| &7队伍技能点 &7&k||"
+  - "&c&l{red_skill_points} &f/ &b&l{blue_skill_points} &f/ &a&l{green_skill_points} &f/ &e&l{yellow_skill_points}"
+  - " "
+  - "{playersinfo}"
+  - " "
+  - "    &c[烟雨庭原创]"

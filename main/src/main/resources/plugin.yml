@@ -1,0 +1,7 @@
+name: AmongBows
+version: ${project.version}
+main: com.aermini.amongbows.AmongBows
+api-version: 1.13
+authors: [AerMini]
+softdepend: []
+load: STARTUP

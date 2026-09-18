@@ -1,0 +1,311 @@
+# 使用前缀来执行特定的动作.
+#
+# [TITLE]{"target":"参数-玩家","title":"标题","subtitle":"副标题","time":"fadein/stay/fadeout","weight":"weight"}
+#   向目标发送title. 其中，time的值单位为tick
+# 举例:   [TITLE]{"target":"all","title":"&b&l弓箭之间","subtitle":"&c[烟雨庭原创]","time":"0/60/20"}
+# 释义: 向所有玩家发送title，标题“&b&l弓箭之间”，副标题“&c[烟雨庭原创]”，淡入时长 0tick(0秒)，停留时长 60tick(3秒)，淡出时长 20tick(1秒)
+#
+# [ACTIONBAR]{"target":"参数-玩家","content":"内容","time":"time","weight":"weight"}
+#   向目标发送actionbar. 其中，若已经有其他内容正在占actionbar进行显示，则将会
+#   根据weight(权重)来占用actionbar [time] tick. 不配置weight，则直接抢占actionar
+#   显示当前内容.
+# 举例: (建议先看完下方关于 WAIT 和 target 的约定再观看此示例)
+#   [ACTIONBAR]{"content":"你好!","time":"60","weight":"5"}
+#   [WAIT]1000
+#   [ACTIONBAR]{"target":"all{alive}","content":"Hello!","time":"60","weight":"10"}
+#   [WAIT]1000
+#   [ACTIONBAR]{"target":"red","content":"Bonjour!","time":"60"}
+# 释义:
+#   (前提是没有权重更高的内容正在显示)所有玩家的actionbar显示 “你好!” 3秒
+#   等待1s (此时上一条正在显示第0~1秒)
+#   所有玩家中的存活玩家的actionbar显示 “Hello!” 3秒
+#   等待1s (此时非存活玩家的“你好!”正在显示第1~2秒，存活玩家正在显示“Hello!”第0~1秒)
+#   所有红队玩家的actionbar显示 “Bonjour!” 3秒
+#   等待1s (此时非红队非存活玩家的“你好!”正在显示第2~3秒，非红队存活玩家正在显示“Hello!”第1~2秒，红队玩家正在显示“Bonjour!”第0~1秒)
+#   --- 第3秒末，非红队非存活玩家的“你好!”显示完成，切换回权重更低的文本继续显示
+#   --- 第4秒末，非红队存活玩家的“Hello!”显示完成，切换回显示“你好!”(切换后显示了2s)
+#   --- 第6秒末，非红队存活玩家的“你好!”显示完成，切换回权重更低的文本继续显示
+#   --- 第6秒末，红队玩家的“Bonjour!”显示完成，切换回显示“Hello!”(切换后显示了2s)
+#   --- 第8秒末，红队玩家的“Hello!”显示完成，切换回显示“你好!”(切换后显示了2s)
+#   --- 第10秒末，红队玩家的“你好!”显示完成，切换回权重更低的文本继续显示
+#
+# [MSG]{"target":"参数-玩家","content":"内容"}
+# [MESSAGE]{"target":"参数-玩家","content":"内容"}
+#   向目标发送消息.
+#
+# [SOUND]{"target":"参数-玩家","sound":"soundID(spigotID/bedrockID)","param":"音量/音调 默认1/1","position":"参数-位置"}
+#   向目标播放声音.
+#
+# [EFFECT]{"target":"参数-玩家","effect":"effectID(spigotID/bedrockID)","level":"效果等级 默认0","time(或duration)":"持续时间 默认30 单位秒"}
+#   给予目标效果.
+#
+# [TELEPORT]{"target":"参数-玩家","position":"参数-位置"}
+#   将目标传送到指定位置.
+#
+# [HEALTH]{"target":"参数-玩家","health":"参数-血量"}
+
+# 参数-玩家
+# target值可传入参数如下. 若不填，则默认为all.
+#
+# all - 全体玩家
+# red - 红队全体玩家
+# blue - 蓝队全体玩家
+# green - 绿队全体玩家
+# yellow - 黄队全体玩家
+# trigger - 触发事件的玩家
+# target - 事件中的目标玩家
+# alive - 存活的玩家
+# died - 已死亡的玩家
+# loss - 已淘汰的玩家
+# relive - 复活中的玩家
+# hasitem[itemName][cond] - 拥有道具"itemName"的玩家. 其中，itemName为空则视为任意道具. cond为道具数量的比较条件. 与下面skillpoint的cond相同用法.
+# skillpoint[cond] - 技能点满足条件 cond 的玩家. 此处cond传入比较运算符与技能点，如 >=3 . 技能点存储类型为byte
+# hasarrow[cond] - 拥有箭数量满足条件 cond 的玩家. 与上面skillpoint的cond相同用法.
+# name[playername] - 玩家名为 playername 的玩家.
+# uuid[playeruuid] - uuid为 uuid 的玩家.
+# world[worldname] - 处于 worldname 世界中的玩家.
+
+# target支持嵌套，并按照从外向内的顺序进行判断.
+# 举例:  died{red{skillpoint[>2]}}
+# 释义:  所有已死亡的玩家中-> 是红队的所有玩家中-> 技能点>2的所有玩家中-> 所有玩家
+# 伪代码:
+#        遍历 所有玩家
+#            如果 已死亡
+#                如果 处于红队
+#                    如果 拥有的技能点数 > 2
+#                        玩家是符合条件的目标
+
+# 参数-位置
+# position值可传入参数如下. 若不填，则默认为触发事件的目标位置.
+#
+# x,y,z - 绝对坐标.
+# _<target> - 目标位置. 如果position target同时存在多个目标，则该action在对多个target执行action时以遍历到的目标的自身位置为主. 若其自身不符合position target的条件，则以position target的0 index坐标为主.
+# .[world]x,y,z - 某个世界中的绝对坐标. 适用于使用了多世界插件的服务端.
+# randomsafe[game] - 随机安全出生点. 优先使用周围玩家少且无掉落物的出生点. 若[game]为空 []，则默认为当前游戏的出生点.
+
+# 参数-血量
+# 在Minecraft中，一颗心相当于2点血量. 你可以在 config.yml 中配置一颗心相当于多少HP. 默认为 1心=1HP. 玩家最大HP也可以在config.yml中更改.
+# health值可传入参数如下. 若不填，则目标血量不会发生变化.
+#
+# 0-Max - 将玩家的血量设置为绝对血量, 若越界则使用最近的临界值.
+# +num - 将玩家的血量增加指定数值. 若越界则使用最近的临界值.
+# -num - 将玩家的血量减少指定数值. 越界会被保留成为玩家的lasthealth值, 可以通过 player.getLasthealth() 方法来获得它. 默认用在玩家复活后，扣除玩家的复活基础血量. 详见 doc.md “5.4 下落与复活” 中 “亏欠的HP”
+
+# 在action.yml中，允许在sequence中使用 [WAIT] 前缀来控制操作之间的等待时间. 单位毫秒
+# 当事件被触发之前，插件会按顺序执行事件内部 actions 的操作.
+# 事件内部actions的执行会在before毫秒之前开始发生.
+# 在action(event)被触发之前，会检查是否满足condition.你可以通过给actions添加 <true> 或 <false> 前缀来控制执行actions时哪些是condition==bool时执行的，或是在actions的第一行就标注<true>或<false>决定下方所有的action是在condition==bool时执行的.
+# 所有的配置如果是空的，则该行可以直接省略不写. 它不会影响后面的正常执行.
+# 当然，在 <> 中，你也可以直接写入condition. 当它满足，则该条action会被执行. 可在开头叠加<condition>. 执行顺序是从左到右.
+# 事件会向内部传递参数，可通过 $args.arg$ 来调用. 事件上方有参数注明了传递的参数. 参数的调用可以嵌套. 使用 [$..$] 来区分.
+# 下面举例.
+# game-gameover_inst 传递了一个 winner.<n>.<type> 参数，可以通过 $winner.1.team$ 来得到胜利者中第一位玩家的队伍ID.
+# 如果使用嵌套, 我们可以通过 $team.[$winner.1.team$].name$ 得到胜利者中第一位玩家的队伍的显示名称.
+# 更进一步，我们可以通过 $winner.[$team.[$winner.1.team$].players$].name$ 得到胜利者中第一位玩家的队伍中的最后一名玩家的玩家名. 它的原理是：得到胜利者队伍中的第 [[第一位胜利者的队伍]的玩家数量] 名玩家的玩家名.
+# 上面这一行的嵌套，等价于这些引用:
+# $winner.[$players$].name$
+# $winner.[$team.[$winner.id$].players$].name$
+# 以及更多.
+
+
+
+# 游戏开始事件 (game-gamestart_inst)
+# 事件描述 | 由于该事件是计划性(主动)事件，所以before配置生效
+# 触发时机 | 游戏开始的一瞬间触发
+# 参数
+# | map - 游戏地图名称
+# | game - 游戏ID
+# | players - 当前玩家数量
+# | maxplayers - 游戏最大玩家数量
+# | minplayers - 游戏要求最少玩家数量
+# | team.<teamID>.<type> - 获取队伍id为<teamID>的队伍的<type>. 其中，<type>可为name, id, formatname, color, simplename, players(游戏一开始时的队内总人数), died, loss, live
+# | time.<format> - 游戏已进行的时间, 返回格式为<format>，如 s、mm:ss等.
+# | dtime.<format> - 游戏剩余的时间, 返回格式为<format>，如 s、mm:ss等.
+game-gamestart_inst:
+  before: 0
+  actions:
+    - "[TITLE]{\"title\":\"&6&l游戏开始!\",\"subtitle\":\"&f战斗将在 &e&l15 &f秒后开启, 请&c及时穿戴一套队服&f！\",\"time\":\"0/40/20\"}"
+
+
+
+# 游戏开始前倒计时事件 (game-before-countdown[opera])
+# 事件描述 | 游戏开始前每一秒倒计时会触发一次事件. 更具体的触发取决于后面的 [opera]. 倒计时符合比较条件时触发. 仅事件before-game_countdown有该特性. 由于该事件是非计划性(被动)事件，所以before配置不生效
+# 触发时机 | 游戏开始前的倒计时触发
+# 参数
+# | count - 游戏开始前的倒计时秒数
+# | game - 游戏ID
+# | map - 游戏地图名称
+# | players - 当前玩家数量
+# | maxplayers - 游戏最大玩家数量
+# | minplayers - 游戏要求最少玩家数量
+game-before-countdown[<=10]: # 倒计时不足11秒时触发
+  actions:
+    - "[TITLE]{\"title\":\"&e&l准备\",\"subtitle\":\"&f游戏将在 &3&l{count} &f秒后开始\"}"
+    - "[SOUND]{\"sound\":\"random.click\"}"
+game-before-countdown[==30]: # 倒计时为30秒时触发
+  actions:
+    - "[TITLE]{\"title\":\"&e&l准备\",\"subtitle\":\"&f游戏将在 &3&l30 &f秒后开始\"}"
+    - "[SOUND]{\"sound\":\"random.click\"}"
+game-before-countdown[]: # 计时每走1秒就触发
+  actions:
+    - "[MSG]{\"content\":\"&b[&3&&l弓箭之间&b] &3游戏将在 &d&l{count}&3秒后开始\"}"
+# 是的，上面的三个 before-game_countdown[] 事件可以转化为下面一个event来完成
+# before-game_countdown[]:
+#   condition: "$args.count$<=30"
+#   actions:
+#     - "<true>[MSG]{"content":"&b[&3&&l弓箭之间&b] &3游戏将在 &d&l$args.count$&3秒后开始"}"
+#     # 上面这一条，当满足$args.count$不足31时，每次事件触发都执行[MSG]
+#     - "<$args.count$==30||$args.count$\\<=10>[TITLE]{"title":"&e&l准备","subtitle":"&f游戏将在 &3&l$args.count$ &f秒后开始"}" # 使用 \\< 与 \\> 来防止条件提前结束了最外层的 <>.
+#     # 上面这条条件的意思为 传入的$args.count$为30或小于等于10时执行本条.
+#     # 即这个title会在倒计时剩余30秒以及不足11秒时每次触发事件向所有玩家发送.
+#     - "<$args.count$==30||$args.count$\\<=10>[SOUND]{"sound":"random.click"}"
+
+
+
+# 道具掉落物刷新事件 (game-refresh_item)
+# 事件描述 | 由于该事件是计划性(主动)事件，所以before配置生效
+# 触发时机 | 游戏中道具掉落物刷新时触发
+# 参数
+# | position.<n> - 第<n>个道具掉落物刷新的位置
+# | quantity - 本次刷新的道具掉落物数量
+# | items.<n>.<type> - 第<n>个道具掉落物刷新的道具的<type>. 其中，<type>可为 name, id(spigotID), lore, amount, oid(item.yml中的id)
+# | game - 游戏ID
+# | map - 游戏地图名称
+# | players - 当前玩家数量
+# | specplayers - 游戏中正在旁观的玩家数量
+# | lossplayers - 游戏中已淘汰玩家数量
+# | diedplayers - 游戏中已死亡玩家数量
+# | team.<teamID>.<type> - 获取队伍id为<teamID>的队伍的<type>. 其中，<type>可为name, id, formatname, color, simplename, players(游戏一开始时的队内总人数), died, loss, live
+# | time.<format> - 游戏已进行的时间, 返回格式为<format>，如 s、mm:ss等.
+# | dtime.<format> - 游戏剩余的时间, 返回格式为<format>，如 s、mm:ss等.
+game-refresh_item:
+  before: 0
+  actions:
+    - "[ACTIONBAR]{\"content\":\"有一批道具随机掉落在了场地中!\",\"time\":\"100\"}"
+
+
+
+# 游戏结束事件 (game-gameover_inst)
+# 事件描述 | 由于该事件是非计划性(被动)事件，所以before配置不生效. 事件存在事件中的目标玩家，是一个array，包含了所有获胜玩家.
+# 触发时机 | 游戏结束的一瞬间触发
+# 参数
+# | winner.<type> - 游戏获胜的队伍的<type>. 其中，<type>可为 name, formatname, color, id(config.yml中的队伍id)
+# | players - 获胜队伍的玩家数量
+# | winner.<n>.<type> - 获胜队伍的第<n>个玩家的<type>. 其中，<type>可为 name, formatname, team, formatteam, uuid, simpleteam, teamname
+# | map - 游戏地图名称
+# | mvp.<type> - 游戏全场最佳玩家的<type>. 其中，<type>可为 name, formatname, team, formatteam, uuid, simpleteam, teamname
+# | game - 游戏ID
+# | nowplayers - 当前玩家数量
+# | specplayers - 游戏中正在旁观的玩家数量
+# | lossplayers - 游戏中已淘汰玩家数量
+# | diedplayers - 游戏中已死亡玩家数量
+# | team.<teamID>.<type> - 获取队伍id为<teamID>的队伍的<type>. 其中，<type>可为name, id, formatname, color, simplename, players(游戏一开始时的队内总人数), died, loss, live
+# | time.<format> - 游戏已进行的时间, 返回格式为<format>，如 s、mm:ss等.
+# | dtime.<format> - 游戏剩余的时间, 返回格式为<format>，如 s、mm:ss等.
+game-gameover_inst:
+  actions:
+    - "[TITLE]{\"title\":\"&7恭喜 &c&l红队 &7         &7\",\"subtitle\":\"&f对局用时: &7&l————    &f全场最佳: &7&l————\",\"time\":\"0/20/0\"}"
+    - "[SOUND]{\"sound\":\"note.pling\",\"param\":\"1/1\"}"
+    - "[WAIT] 750"
+    - "[TITLE]{\"title\":\"&7恭喜 &b&l蓝队 &7         &7\",\"subtitle\":\"&f对局用时: &7&l————    &f全场最佳: &7&l————\",\"time\":\"0/20/0\"}"
+    - "[SOUND]{\"sound\":\"note.pling\",\"param\":\"1/1.2\"}"
+    - "[WAIT] 750"
+    - "[TITLE]{\"title\":\"&7恭喜 &a&l绿队 &7         &7\",\"subtitle\":\"&f对局用时: &7&l————    &f全场最佳: &7&l————\",\"time\":\"0/20/0\"}"
+    - "[SOUND]{\"sound\":\"note.pling\",\"param\":\"1/1.4\"}"
+    - "[WAIT] 750"
+    - "[TITLE]{\"title\":\"&7恭喜 &e&l黄队 &7         &7\",\"subtitle\":\"&f对局用时: &7&l————    &f全场最佳: &7&l————\",\"time\":\"0/20/0\"}"
+    - "[SOUND]{\"sound\":\"note.pling\",\"param\":\"1/1.6\"}"
+    - "[WAIT] 750"
+    - "[TITLE]{\"title\":\"&7恭喜 &l$args.winner.formatname$ &7获得胜利\",\"subtitle\":\"&f对局用时: &e&l$args.time.mm:ss$    &f全场最佳: &6&l$args.mvp.name$\",\"time\":\"0/100/60\"}"
+    - "[SOUND]{\"sound\":\"note.pling\",\"param\":\"1/1.8\"}"
+    - "[SOUND]{\"sound\":\"mob.elderguardian.curse\"}"
+    - "[SOUND]{\"sound\":\"mob.enderdragon.growl\"}"
+
+
+
+# 复活玩家事件 (player-relive)
+# 事件描述 | 由于该事件是非计划性(被动)事件，所以before配置不生效
+# 触发时机 | 玩家被复活的一瞬间
+# 参数
+# | player.<type> - 被复活的玩家(触发事件的玩家)的<type>. 其中，<type>可为 name, formatname, team, formatteam, uuid, simpleteam, id(config.yml中的队伍id)
+# | target.<type> - 复活玩家的玩家(事件中的目标玩家)的<type>. 其中，<type>可为 name, formatname, team, formatteam, uuid, simpleteam, id(config.yml中的队伍id)
+# | game - 游戏ID
+# | map - 游戏地图名称
+# | players - 当前玩家数量
+# | specplayers - 游戏中正在旁观的玩家数量
+# | lossplayers - 游戏中已淘汰玩家数量
+# | diedplayers - 游戏中已死亡玩家数量
+# | team.<teamID>.<type> - 获取队伍id为<teamID>的队伍的<type>. 其中，<type>可为name, id, formatname, color, simplename, players(游戏一开始时的队内总人数), died, loss, live
+# | time.<format> - 游戏已进行的时间, 返回格式为<format>，如 s、mm:ss等.
+# | dtime.<format> - 游戏剩余的时间, 返回格式为<format>，如 s、mm:ss等.
+player-relive:
+  actions:
+    - "[TITLE]{\"title\":\"&d&l重 生\",\"subtitle\":\"&f你被 &3$args.target.name$ &f复活了!\",\"time\":\"0/40/20\"}"
+    - "[TELEPORT]{\"target\":\"trigger\",\"position\":\"randomsafe[]\"}"
+
+
+
+# 拾起道具掉落物事件 (player-pickup[item])
+# 事件描述 | 由于该事件是非计划性(被动)事件，所以before配置不生效
+# 触发时机 | 玩家拾起道具掉落物[item]的一瞬间. 若[item]为空，则拾起任意道具掉落物都会触发. [item]填入的值为 item.yml 中的道具id
+# 参数
+# | player.<type> - 拾起道具掉落物的玩家(触发事件的玩家)的<type>. 其中，<type>可为 name, formatname, team, formatteam, uuid, simpleteam, id(config.yml中的队伍id)
+# | item.<type> - 被拾起的道具掉落物的<type>. 其中，<type>可为 name, id(spigotID), lore, amount, oid(item.yml中的id)
+# | game - 游戏ID
+# | map - 游戏地图名称
+# | players - 当前玩家数量
+# | specplayers - 游戏中正在旁观的玩家数量
+# | lossplayers - 游戏中已淘汰玩家数量
+# | diedplayers - 游戏中已死亡玩家数量
+# | team.<teamID>.<type> - 获取队伍id为<teamID>的队伍的<type>. 其中，<type>可为name, id, formatname, color, simplename, players(游戏一开始时的队内总人数), died, loss, live
+# | time.<format> - 游戏已进行的时间, 返回格式为<format>，如 s、mm:ss等.
+# | dtime.<format> - 游戏剩余的时间, 返回格式为<format>，如 s、mm:ss等.
+player-pickup[]:
+  actions:
+    - "[MSG]{\"target\":\"trigger\",\"content\":\"&b[&3&&l弓箭之间&b] &f你拾起了 &e$args.item.name$ &f!\"}"
+
+
+
+# 玩家死亡事件 (player-death)
+# 事件描述 | 由于该事件是非计划性(被动)事件，所以before配置不生效
+# 触发时机 | 玩家死亡的一瞬间
+# 参数
+# | player.<type> - 死亡的玩家(触发事件的玩家)的<type>. 其中，<type>可为 name, formatname, team, formatteam, uuid, simpleteam, teamid(config.yml中的队伍id), Gsimpleteam, Gteam, Gteamid, Gformatteam, Gformatname
+# | killer.<type> - 杀死玩家的玩家(事件中的目标玩家)的<type>. 其中，<type>可为 name, formatname, team, formatteam, uuid, simpleteam, teamid(config.yml中的队伍id)
+# | game - 游戏ID
+# | map - 游戏地图名称
+# | players - 当前玩家数量
+# | specplayers - 游戏中正在旁观的玩家数量
+# | lossplayers - 游戏中已淘汰玩家数量
+# | diedplayers - 游戏中已死亡玩家数量
+# | team.<teamID>.<type> - 获取队伍id为<teamID>的队伍的<type>. 其中，<type>可为name, id, formatname, color, simplename, players(游戏一开始时的队内总人数), died, loss, live
+# | time.<format> - 游戏已进行的时间, 返回格式为<format>，如 s、mm:ss等.
+# | dtime.<format> - 游戏剩余的时间, 返回格式为<format>，如 s、mm:ss等.
+# | item.<type> - 杀死玩家使用的道具的<type>. 其中，<type>可为 name, id(spigotID), lore, amount, oid(item.yml中的id). 默认返回 无
+# | skill.<type> - 杀死玩家使用的技能的<type>. 其中，<type>可为 name, id(skill.yml中的id). 默认返回 无
+player-death:
+  actions:
+    - "[TITLE]{\"target\":\"trigger\",\"title\":\"&c&l死 亡\",\"subtitle\":\"&f你被 &3$args.killer.name$ &f使用 &e$args.item.name$&7(&b$args.skill.name$&7) &f击杀了!\",\"time\":\"0/60/40\"}"
+    - "[SOUND]{\"target\":\"trigger\",\"sound\":\"random.totem\"}"
+    - "[MSG]{\"content\":\"&b[&3&&l弓箭之间&b] &d$args.player.name$ &6被 &3$args.killer.name$ &f击杀了!\",\"time\":\"100\"}"
+
+
+
+# 玩家命中事件 (game-player-hit)
+# 事件描述 | 由于该事件是非计划性(被动)事件，所以before配置不生效
+# 触发时机 | 玩家命中另一名玩家的一瞬间
+# 参数
+# | player.<type> - 命中另一名玩家的玩家(触发事件的玩家)的<type>. 其中，<type>可为 name, formatname, team, formatteam, uuid, simpleteam, teamid(config.yml中的队伍id)
+# | target.<type> - 被命中的玩家(事件中的目标玩家)的<type>. 其中，<type>可为 name, formatname, team, formatteam, uuid, simpleteam, teamid(config.yml中的队伍id)
+# | game - 游戏ID
+# | map - 游戏地图名称
+# | players - 当前玩家数量
+# | specplayers - 游戏中正在旁观的玩家数量
+# | lossplayers - 游戏中已淘汰玩家数量
+# | diedplayers - 游戏中已死亡玩家数量
+# | team.<teamID>.<type> - 获取队伍id为<teamID>的队伍的<type>. 其中，<type>可为name, id, formatname, color, simplename, players(游戏一开始时的队内总人数), died, loss, live
+# | time.<format> - 游戏已进行的时间, 返回格式为<format>，如 s、mm:ss等.
+# | dtime.<format> - 游戏剩余的时间, 返回格式为<format>，如 s、mm:ss等.
+game-player-hit:
+  actions:
+    - "[MSG]{\"content\":\"&b[&3&&l弓箭之间&b] &d$args.player.name$ &6命中 &3$args.target.name$ &f!\",\"time\":\"100\"}"
