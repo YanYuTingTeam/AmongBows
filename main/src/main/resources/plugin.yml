@@ -5,3 +5,18 @@ api-version: 1.13
 authors: [AerMini]
 softdepend: []
 load: STARTUP
+
+commands:
+  amongbows:
+    description: 弓箭之间主命令
+    usage: /amongbows help
+    aliases: [ab]
+    permission: amongbows.use
+
+permissions:
+  amongbows.use:
+    description: 使用弓箭之间基础命令
+    default: true
+  amongbows.admin:
+    description: 管理对局开始与结束
+    default: op

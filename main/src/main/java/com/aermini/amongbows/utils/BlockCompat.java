@@ -1,6 +1,7 @@
 package com.aermini.amongbows.utils;
 
 import com.aermini.amongbows.api.BlockProvider;
+import com.aermini.amongbows.api.CompatProvider;
 
 public class BlockCompat {
 
@@ -41,5 +42,9 @@ public class BlockCompat {
 
     public static String getProviderVersion() {
         return PROVIDER.getVersion();
+    }
+
+    public static CompatProvider compat() {
+        return (CompatProvider) PROVIDER;
     }
 }

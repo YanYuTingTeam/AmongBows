@@ -1,12 +1,14 @@
 package com.aermini.amongbows.nms.v1_12_R1;
 
 import com.aermini.amongbows.api.BlockProvider;
+import com.aermini.amongbows.api.CompatProvider;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class BlockCompat1_12 implements BlockProvider {
+public class BlockCompat1_12 implements BlockProvider, CompatProvider {
 
     private static final String VERSION = "v1_12_R1";
 
@@ -95,5 +97,24 @@ public class BlockCompat1_12 implements BlockProvider {
         } catch (Exception e) {
             return 0;
         }
+    }
+
+    @Override
+    public boolean sendTitle(Player player, String title, String subtitle, int fadeIn, int stay, int fadeOut) {
+        player.sendTitle(title == null ? "" : title, subtitle == null ? "" : subtitle, fadeIn, stay, fadeOut);
+        return true;
+    }
+
+    @Override
+    public boolean sendActionBar(Player player, String text) {
+        player.spigot().sendMessage(net.md_5.bungee.api.ChatMessageType.ACTION_BAR,
+            net.md_5.bungee.api.chat.TextComponent.fromLegacyText(text == null ? "" : text));
+        return true;
+    }
+
+    @Override
+    public boolean setGlowing(org.bukkit.entity.Entity entity, boolean glowing) {
+        entity.setGlowing(glowing);
+        return true;
     }
 }

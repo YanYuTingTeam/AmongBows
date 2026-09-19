@@ -1,3 +1,7 @@
+hp:
+  hearts-per-hp: 1 # 一颗心相当于多少HP (见 action.yml 参数-血量)
+  max-hp: 15 # 玩家最大生命值上限(HP)
+
 defeaultmap: # 默认地图配置. 注意 此处不指 game/default.yml
   generate:
     enabled: false # 设为true会在游戏区域随机生成柱子, false则直接使用已有地图
