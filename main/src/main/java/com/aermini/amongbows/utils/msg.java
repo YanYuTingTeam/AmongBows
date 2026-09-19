@@ -4,6 +4,10 @@ import org.bukkit.ChatColor;
 
 public class msg {
 
+    /**
+     *  
+     *
+     */
     public static String t(String s) {
         return s == null ? "" : ChatColor.translateAlternateColorCodes('&', s);
     }

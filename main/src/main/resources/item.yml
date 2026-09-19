@@ -12,6 +12,9 @@ bow:
     material: BOW # 对应自己维护的mapping中的material
     lore:
       - "选择技能后, 蓄力使用弓发射箭对命中的目标使用技能"
+    #color: "#ffffff" # hex. 仅对可染色物品生效
+    #color: "white" # minecraft. 仅对可染色物品生效
+    #color: "rgb(255,255,255)" # rgb. 仅对可染色物品生效
   event: # 触发的action事件
     # 左键点击触发 LEFT-CLICK
     LEFT-CLICK: ""
@@ -23,4 +26,19 @@ bow:
     ITEM-DROP: ""
     # 获得该道具触发
     ITEM-GET: ""
-    # 
+    # 在背包中移动该道具触发
+    INV-MOVE: ""
+    # 在背包中左键点击触发
+    INV-LEFT-CLICK: ""
+    # 在背包中右键点击触发
+    INV-RIGHT-CLICK: ""
+    # 在背包中按下SHIFT点击触发
+    INV-SHIFT-CLICK: ""
+    # 切换到手持该物品触发
+    HANDIN: ""
+    # 从手持该物品切换到非手持触发
+    HANDOUT: ""
+
+cloth-red:
+  intro:
+    name: "lang-item.cloth.red" # 上方bow直接填入name; 或此处填入lang-<key>, 会自动根据玩家当前选择的语言翻译

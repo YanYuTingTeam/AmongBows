@@ -43,6 +43,13 @@
 #   将目标传送到指定位置.
 #
 # [HEALTH]{"target":"参数-玩家","health":"参数-血量"}
+#   更改目标血量(HP).
+#
+# [GIVE]{"target":"参数-玩家","item":"item.yml中配置的itemid","amount":"数量 默认1"}
+#   给予目标物品.
+#
+# [COMMAND]{"target":"参数-玩家, 但此处默认值为console, 并且允许主动传入console","content":"命令","op":"true/false, 即是否使该目标以op身份执行命令"}
+#   以目标身份执行命令.
 
 # 参数-玩家
 # target值可传入参数如下. 若不填，则默认为all.
@@ -125,6 +132,7 @@ game-gamestart_inst:
   before: 0
   actions:
     - "[TITLE]{\"title\":\"&6&l游戏开始!\",\"subtitle\":\"&f战斗将在 &e&l15 &f秒后开启, 请&c及时穿戴一套队服&f！\",\"time\":\"0/40/20\"}"
+    - "[GIVE]{\"item\":\"bow\"}"
 
 
 

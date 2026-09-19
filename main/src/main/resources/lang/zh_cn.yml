@@ -5,15 +5,20 @@ intro: # 语言信息
     - "默认语言"
 
 content:
-  team-simple-red: "&c&lR" # args中的simpleteam
-  team-simple-blue: "&b&lB"
-  team-simple-green: "&a&lG"
-  team-simple-yellow: "&e&lY"
-  team-color-red: '&c'
-  team-color-blue: '&b'
-  team-color-green: '&a'
-  team-color-yellow: '&e'
-  team-red: '红队'
-  team-blue: '蓝队'
-  team-green: '绿队'
-  team-yellow: '黄队'
+  team.simple.red: "&c&lR" # args中的simpleteam
+  team.simple.blue: "&b&lB"
+  team.simple.green: "&a&lG"
+  team.simple.yellow: "&e&lY"
+  team.color.red: '&c'
+  team.color.blue: '&b'
+  team.color.green: '&a'
+  team.color.yellow: '&e'
+  team.red: '红队'
+  team.blue: '蓝队'
+  team.green: '绿队'
+  team.yellow: '黄队'
+  cloth.red: '&c&n红队队服&7(右键穿戴)'
+  cloth.blue: '&b&n蓝队队服&7(右键穿戴)'
+  cloth.green: '&a&n绿队队服&7(右键穿戴)'
+  cloth.yellow: '&e&n黄队队服&7(右键穿戴)'
+  item.bow: '弓 &7&n(左键选择技能)'

@@ -9,6 +9,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.File;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 public class ConfigManager {
 
@@ -27,8 +29,8 @@ public class ConfigManager {
         saveResource("action.yml");
         saveResource("item.yml");
         saveResource("scoreboard.yml");
-        saveResource("lang/zh_cn.yml");
-        saveResource("game/default.yml");
+        extractFolder("lang/");
+        extractFolder("game/");
 
         config = YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder(), "config.yml"));
         heartsPerHp = Math.max(0.1, config.getDouble("hp.hearts-per-hp", 1));
@@ -53,6 +55,35 @@ public class ConfigManager {
         File f = new File(plugin.getDataFolder(), path);
         if (!f.exists()) {
             plugin.saveResource(path, false);
+        }
+    }
+
+    private void extractFolder(String folder) {
+        try {
+            File source = new File(getClass().getProtectionDomain().getCodeSource().getLocation().toURI());
+            if (source.isFile()) {
+                JarFile jar = new JarFile(source);
+                try {
+                    java.util.Enumeration<JarEntry> entries = jar.entries();
+                    while (entries.hasMoreElements()) {
+                        JarEntry entry = entries.nextElement();
+                        String name = entry.getName();
+                        if (entry.isDirectory() || !name.startsWith(folder) || !name.endsWith(".yml")) continue;
+                        saveResource(name);
+                    }
+                } finally {
+                    jar.close();
+                }
+            } else if (source.isDirectory()) {
+                File dir = new File(source, folder);
+                File[] files = dir.listFiles((d, n) -> n.endsWith(".yml"));
+                if (files == null) return;
+                for (File f : files) {
+                    saveResource(folder + f.getName());
+                }
+            }
+        } catch (Exception e) {
+            plugin.getLogger().warning("无法提取插件包内资源目录 " + folder + ": " + e.getMessage());
         }
     }
 

@@ -364,6 +364,27 @@ after: # 游戏结束
 | `▼` | 粉色`&d` | 最近受到伤害 | 受击后 | 3s | 所有人 |
 | `★` | 橙色`&6` | 已被其他玩家猜对真实队伍 | 有人猜测正确后 | 永久 | 所有人 |
 
+## 十六、命令
+该插件存在以下命令. 当命令携带参数(-n)时，空格后、下一个参数前跟的是参数内容. 比如:
+
+`/abs test -b abc def -t 32 -l awd` 该命令的`b`参数值为`abc def`、`t`参数值为`32`、`l`参数值为`awd`
+
+总命令
+- `/amongbows` `/abs` `/ab` AmongBows 主命令. 直接使用后返回插件信息, 相当于`/abs info`
+- `/abs help` 获取帮助菜单
+- `/abs join -g <gameid> -p <player>` 使玩家player加入游戏gameid. 当player为空时，默认为执行命令的玩家 当gameid为空时，默认为加入随机可用游戏.
+- `/abs leave -p <player>` 使玩家player离开当前游戏. 当player为空时，默认为执行命令的玩家
+- `/abs start -g <gameid>` 强制开启游戏gameid. 当gameid为空时，默认为执行命令时所在的游戏.
+- `/abs stop -g <gameid>` 强制结束游戏gameid. 当gameid为空时，默认为执行命令时所在的游戏.
+- `/abs list -p <page> -t <t> -s <status>` 列出所有状态为status(可传入`running` `waiting` `stopping`. 非三值时默认为`all`)游戏，每页列出`t`(default=10)条. 并翻至第`page`(default=1)页.
+- `/abs language -l <lang> -p <player>` 更换玩家语言. 当player为空时, 默认为执行命令的玩家. 当lang为空时，默认为player打开选择语言的GUI. 当玩家处于已经开始的对局中, 无法更改语言
+
+对局命令
+- `/amongbowsgame` `/abg` `/ag` AmongBows 对局主命令. 直接使用后返回插件信息, 相当于`/abs info`
+- `/abg guess -p <player>` 使玩家player打开猜测玩家队伍UI. 当player为空时，默认为执行命令的玩家
+- `/abg skill -p <player>` 使玩家player打开选择技能的UI. 当player为空时，默认为执行命令的玩家
+- `/abg `
+
 ---
 
 该玩法为烟雨庭原创. URLs: 
