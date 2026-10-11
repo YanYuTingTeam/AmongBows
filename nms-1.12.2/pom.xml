@@ -13,18 +13,26 @@
     <artifactId>amongbows-nms-1.12.2</artifactId>
     <packaging>jar</packaging>
 
+    <repositories>
+        <repository>
+            <id>repo</id>
+            <url>https://maven.aliyun.com/repository/public</url>
+        </repository>
+        <repository>
+            <id>repo2</id>
+            <url>https://repo1.maven.org/maven2/</url>
+        </repository>
+        <repository>
+            <id>repo3</id>
+            <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
+        </repository>
+    </repositories>
+
     <dependencies>
         <dependency>
             <groupId>com.aermini</groupId>
             <artifactId>amongbows-api</artifactId>
             <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.spigotmc</groupId>
-            <artifactId>spigot</artifactId>
-            <version>1.12.2</version>
-            <scope>system</scope>
-            <systemPath>C:/Users/Administrator/.m2/repository/org/spigotmc/spigot/1.12.2/spigot-1.12.2.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>org.spigotmc</groupId>

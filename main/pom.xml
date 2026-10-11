@@ -13,12 +13,26 @@
     <artifactId>amongbows-main</artifactId>
     <packaging>jar</packaging>
 
+    <repositories>
+        <repository>
+            <id>repo</id>
+            <url>https://maven.aliyun.com/repository/public</url>
+        </repository>
+        <repository>
+            <id>repo2</id>
+            <url>https://repo1.maven.org/maven2/</url>
+        </repository>
+        <repository>
+            <id>repo3</id>
+            <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
+        </repository>
+    </repositories>
+
     <dependencies>
         <dependency>
             <groupId>com.aermini</groupId>
             <artifactId>amongbows-api</artifactId>
         </dependency>
-        <!-- 同时打包两个 NMS 模块，启动时按服务器版本自动选择 -->
         <dependency>
             <groupId>com.aermini</groupId>
             <artifactId>amongbows-nms-1.8.8</artifactId>
